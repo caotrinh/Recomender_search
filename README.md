@@ -18,9 +18,9 @@ o	Generatekeyword.py: read the data “web2.db” then generate the keyword from
 
 -	Initialize a boilerplate with Create React App setup:
 npm install -g create-react-app 
-# install CRA if you don't have it.
+#install CRA if you don't have it.
 create-react-app recomendationsytem  
-# initialize the boilerplate.
+#initialize the boilerplate.
 cd recomendationsystem
 -	Test the default CRA app:
 npm start
@@ -30,7 +30,7 @@ npm install --save @appbaseio/reactivesearch
 
 -	All the ReactiveSearch components are wrapped inside a container component — ReactiveBase which glues the Elasticsearch index and the ReactiveSearch components together. Edit src/App.js file.
 
--	import React, { Component } from 'react';
+import React, { Component } from 'react';
 import {
   ReactiveBase,
   DataSearch,
