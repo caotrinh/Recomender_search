@@ -1,0 +1,65 @@
+import csv
+import pandas as pd
+import rakeclass as RC
+
+
+#def write_csvfile(column_keyword):
+#    filewriter = pd.read_csv('content_keywords.csv')
+#    new_column = pd.DataFrame('Keywords',[column_keyword])
+#    filewriter = filewriter.merge(new_column,left_index=True,right_index=True)
+#    filewriter.to_csv('content_keywords.csv')
+
+def read_csv(filename):
+    df = pd.read_csv(filename)
+    return df
+
+def selectkeywords():
+    filereader = read_csv('content_scrape.csv')
+    filereader_modified = filereader.fillna(" ")
+    #print('Filereader', filereader)
+    #print(filereader.content)
+    Kword = []
+
+    for line in filereader_modified:
+        for rows in filereader_modified.content:
+            #print("Rows:",rows)
+            text = rows
+            sentenceList = RC.split_sentences(text)
+            stoppath = "SmartStoplist.txt"
+            stopwordpattern = RC.build_stop_word_regex(stoppath)
+
+                # generate candidate keywords
+            phraseList = RC.generate_candidate_keywords(sentenceList, stopwordpattern)
+
+                # calculate individual word scores
+            wordscores = RC.calculate_word_scores(phraseList)
+
+                # generate candidate keyword scores
+            keywordcandidates = RC.generate_candidate_keyword_scores(phraseList, wordscores)
+
+            rake = RC.Rake("SmartStoplist.txt")
+            keywords = rake.run(text)
+            mainword = RC.inKey5(wordscores)
+            Kword.append(mainword)
+    print("Kword:", Kword)
+    return Kword
+
+def create_csvfile():
+    csvfile = 'content_scrape.csv'
+    KEYword = selectkeywords()
+
+    with open (csvfile,'r') as fin, open ('output' + csvfile,'w') as fout:
+        reader = csv.reader(fin, lineterminator = '\n')
+        writer = csv.writer(fout, lineterminator = '\n')
+        writer.writerow(next(reader)+['KEYWORD'])
+
+        #for keys in KEYword:
+        index = 0
+        for row, val in zip(reader, KEYword[index]):
+            writer.writerow(row + [KEYword[index]])
+            index += 1
+
+
+
+create_csvfile()
+
